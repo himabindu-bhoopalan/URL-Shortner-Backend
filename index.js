@@ -3,7 +3,7 @@ const app=express();
 const bodyParser=require('body-parser');
 const cors=require('cors');
 const mongoClient=require('mongodb');
-const url='mongodb://localhost:27017';
+const url='mongodb+srv://hima:nature@cluster0-6o34c.mongodb.net/test?retryWrites=true&w=majority';
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -61,6 +61,6 @@ function shortenURL(){
 }
 
 
-app.listen(5000,function(){
-    console.log('port is running on 5000');
+app.listen(process.env.PORT,function(){
+    
 });

@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 //redirection 
 app.get('/:shorturlid', cors(),function(req,res){
     var url_new=req.params.shorturlid
-    console.log(req.params.shorturlid,url_new);
+   
     mongoClient.connect(url, { useUnifiedTopology: true } , (err, client) => {
         if (err) return console.log(err);
         var db = client.db("URL");
@@ -35,7 +35,7 @@ app.get('/:shorturlid', cors(),function(req,res){
 //getting all urls 
 app.get('/', function (req, res) {
     // console.log( req.header('User-Agent'))
-    console.log('form component');
+    // console.log('form component');
     const ipInfo = req.ipInfo;
     mongoClient.connect(url, { useUnifiedTopology: true }, (err, db) => {
         if (err) return console.log(err);
@@ -44,7 +44,7 @@ app.get('/', function (req, res) {
         urlLink
             .then(function (data) {
                 db.close();
-                console.log(data);
+               
                 res.json(data);
             })
             .catch(function (err) {
@@ -71,8 +71,8 @@ function shortenURL() {
 
 //post url
 app.post('/shorturl', function (req, res) {
-    console.log('post method');
-    console.log(req.body);
+  
+    
     mongoClient.connect(url, { useUnifiedTopology: true }, function (err, db) {
         if (err) throw err;
         // console.log(err);
@@ -90,7 +90,7 @@ app.post('/shorturl', function (req, res) {
                 var obj = { "long": req.body.url, "short": short, clicks: 0 }
                 dbo.collection('shorturldb').insertOne(obj, function (err, result) {
                     if (err) throw err;
-                    console.log('linkadded');
+                 
                     db.close();
                     res.json({
                         status: 200,
@@ -112,7 +112,7 @@ app.post('/shorturl', function (req, res) {
 //deleting urls 
 app.delete("/delete/:id", function (req, res) {
     let id = req.params.id;
-    console.log('inside delete' + id);
+    // console.log('inside delete' + id);
     var ObjectId = require('mongodb').ObjectID;
     mongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
         if (err) throw err;
@@ -145,4 +145,3 @@ app.delete("/delete/:id", function (req, res) {
 app.listen(process.env.PORT,function(){
     console.log('The port is running');
 });
-

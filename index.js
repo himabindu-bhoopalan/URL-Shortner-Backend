@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 
 //redirection 
-app.get('/:shorturlid', function(req,res,next){
+app.get('/:shorturlid', cors(),function(req,res){
     var url_new=req.params.shorturlid
     console.log(req.params.shorturlid,url_new);
     mongoClient.connect(url, { useUnifiedTopology: true } , (err, client) => {
@@ -23,11 +23,8 @@ app.get('/:shorturlid', function(req,res,next){
             db.collection('shorturldb').findOneAndUpdate({ short: url_new}, { $inc: { clicks: +1 } }, function (err, data) {
                 if (err) throw err;
                 client.close();
-                console.log(data)
                 res.redirect(data.value.long);
 
-                console.log(res());
-               
             })
         })
 

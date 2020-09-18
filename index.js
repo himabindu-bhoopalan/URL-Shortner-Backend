@@ -3,8 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoClient = require('mongodb');
-// const url='mongodb+srv://hima:nature@cluster0-6o34c.mongodb.net/test?retryWrites=true&w=majority';
-const url = 'mongodb://localhost:27017';
+const url='mongodb+srv://hima:nature@cluster0-6o34c.mongodb.net/test?retryWrites=true&w=majority';
+// const url = 'mongodb://localhost:27017';
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -142,10 +142,7 @@ app.delete("/delete/:id", function (req, res) {
 
 
 
-// app.listen(process.env.PORT,function(){
-//     console.log('The port is running');
-// });
-
-app.listen(3040, function () {
-    console.log('port is running on 3040')
+app.listen(process.env.PORT,function(){
+    console.log('The port is running');
 });
+

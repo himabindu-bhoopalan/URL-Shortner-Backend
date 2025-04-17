@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoClient = require('mongodb');
-const url='mongodb+srv://personalprojecthima:anq1CKPEFKLGXAx2@cluster0.1sknmnj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const url=process.env.MONGODB_URI;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))

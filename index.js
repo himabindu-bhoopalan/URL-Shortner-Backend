@@ -111,7 +111,7 @@ app.delete("/delete/:id", function (req, res) {
 });
 
 //redirection 
-app.get('/:shorturlid', cors(),function(req,res){
+app.get('redirect/:shorturlid', cors(),function(req,res){
     var url_new=req.params.shorturlid
    
     mongoClient.connect(url, { useUnifiedTopology: true } , (err, client) => {

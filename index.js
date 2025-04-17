@@ -3,44 +3,21 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoClient = require('mongodb');
-const url='mongodb+srv://hima:nature@cluster0-6o34c.mongodb.net/test?retryWrites=true&w=majority';
-// const url = 'mongodb://localhost:27017';
-
+const url='mongodb+srv://personalprojecthima:anq1CKPEFKLGXAx2@cluster0.1sknmnj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 
 
-//redirection 
-app.get('/:shorturlid', cors(),function(req,res){
-    var url_new=req.params.shorturlid
-   
-    mongoClient.connect(url, { useUnifiedTopology: true } , (err, client) => {
-        if (err) return console.log(err);
-        var db = client.db("URL");
-        db.collection('shorturldb').findOne({short:url_new},function(err,data){
-            if (err) throw err;
-            db.collection('shorturldb').findOneAndUpdate({ short: url_new}, { $inc: { clicks: +1 } }, function (err, data) {
-                if (err) throw err;
-                client.close();
-                res.redirect(data.value.long);
-
-            })
-        })
-
-    })
-
-})
-
 //getting all urls 
-app.get('/', function (req, res) {
+app.get('/home', function (req, res) {
     // console.log( req.header('User-Agent'))
-    // console.log('form component');
+    console.log('form component');
     const ipInfo = req.ipInfo;
     mongoClient.connect(url, { useUnifiedTopology: true }, (err, db) => {
         if (err) return console.log(err);
-        var dbo = db.db("URL");
-        var urlLink = dbo.collection('shorturldb').find().toArray();
+        var dbo = db.db("URLS");
+        var urlLink = dbo.collection('shorturl').find().toArray();
         urlLink
             .then(function (data) {
                 db.close();
@@ -57,8 +34,35 @@ app.get('/', function (req, res) {
     })
 });
 
+//redirection 
+app.get('/:shorturlid', cors(),function(req,res){
+    var url_new=req.params.shorturlid
+   
+    mongoClient.connect(url, { useUnifiedTopology: true } , (err, client) => {
+        if (err) return console.log(err);
+        var db = client.db("URLS");
+        db.collection('shorturl').findOne({short:url_new},function(err,data){
+            if (err) throw err;
+            db.collection('shorturl').findOneAndUpdate({ short: url_new}, { $inc: { clicks: +1 } }, function (err, data) {
+                if (err) throw err;
+                
+                client.close();
+                if (data.value) {
+                    const longUrl = data.value.long;
+                    res.redirect(longUrl);
+                } else {
+                    res.status(404).send("Short URL not found.");
+                }
+                
 
-//function to shorten url
+            })
+        })
+
+    })
+
+})
+
+// function to shorten url
 function shortenURL() {
     var short = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -76,9 +80,9 @@ app.post('/shorturl', function (req, res) {
     mongoClient.connect(url, { useUnifiedTopology: true }, function (err, db) {
         if (err) throw err;
         // console.log(err);
-        var dbo = db.db('URL');
+        var dbo = db.db('URLS');
         var short = shortenURL();
-        dbo.collection('shorturldb').findOne({ "long": req.body.url }, function (err, result) {
+        dbo.collection('shorturl').findOne({ "long": req.body.url }, function (err, result) {
             if (err) throw err;
             if (result) {
                 res.json({
@@ -88,7 +92,7 @@ app.post('/shorturl', function (req, res) {
             } else {
 
                 var obj = { "long": req.body.url, "short": short, clicks: 0 }
-                dbo.collection('shorturldb').insertOne(obj, function (err, result) {
+                dbo.collection('shorturl').insertOne(obj, function (err, result) {
                     if (err) throw err;
                  
                     db.close();
@@ -106,9 +110,6 @@ app.post('/shorturl', function (req, res) {
 
 });
 
-
-
-
 //deleting urls 
 app.delete("/delete/:id", function (req, res) {
     let id = req.params.id;
@@ -116,9 +117,9 @@ app.delete("/delete/:id", function (req, res) {
     var ObjectId = require('mongodb').ObjectID;
     mongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
         if (err) throw err;
-        var db = client.db("URL");
+        var db = client.db("URLS");
         // console.log(id);
-        db.collection("shorturldb").deleteOne({ _id: ObjectId(id) }, function (err, result) {
+        db.collection("shorturl").deleteOne({ _id: ObjectId(id) }, function (err, result) {
             if (err) throw err;
             client.close();
             if (result.deletedCount == 1) {
@@ -139,9 +140,8 @@ app.delete("/delete/:id", function (req, res) {
 });
 
 
+const PORT = process.env.PORT || 8080;
 
-
-
-app.listen(process.env.PORT,function(){
-    console.log('The port is running');
-});
+app.listen(8080, () => {
+    console.log("Server running on port 8080...");
+  });

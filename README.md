@@ -1,6 +1,7 @@
-# 🔗 URL Shortener Service 🚀  
+# 🔗 URL Shortener Service 
 A simple and efficient Node.js-based URL Shortener backend using MongoDB, Express, and CORS. This service generates short, unique URLs and handles redirection, tracking, and management of shortened links.
 
+🚀 **Live Demo:** [View on Netlify](https://himabindu-urlshortner.netlify.app/)
 ---
 
 ## 📚 Overview
